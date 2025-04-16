@@ -311,6 +311,47 @@ class HighResDV2(nn.Module):
 
         upsampled_features = self.invert_transforms(features_batch, x)
         return upsampled_features
+    
+
+    @torch.no_grad()
+    def forward_batch(
+        self,
+        x: torch.Tensor,
+        attn_choice: AttentionOptions = "none",
+        batch_size: int = 16,
+    ) -> torch.Tensor:
+        """Feed input img $x through network and get low and high res features.
+
+        :param x: unbatched image tensor
+        :type x: torch.Tensor
+        :return: tuple of low-res Dv2 features and our upsample high-res Dv2 features
+        :rtype: Tuple[torch.Tensor, torch.Tensor]
+        """
+        x.requires_grad = self.track_grad
+        if self.dtype != torch.float32:  # cast (i.e to f16)
+            x = x.type(self.dtype)
+
+        img_batch = self.get_transformed_input_batch(x, self.transforms)
+        N_imgs = img_batch.shape[0]
+        
+        all_features = []
+        for i in range(0, N_imgs, batch_size):
+            _img_batch = img_batch[i:i+batch_size]
+            out_dict = self.dinov2.forward_feats_attn(_img_batch, None, attn_choice)  # type: ignore
+            if attn_choice != "none":
+                feats, attn = out_dict["x_norm_patchtokens"], out_dict["x_patchattn"]
+                features_batch = torch.concat((feats, attn), dim=-1)
+            else:
+                features_batch = out_dict["x_norm_patchtokens"]
+
+            if self.dtype != torch.float32:  # cast (i.e to f16)
+                features_batch = features_batch.type(self.dtype)
+            
+            all_features.append(features_batch)
+
+        features_batch = torch.cat(all_features, dim=0)
+        upsampled_features = self.invert_transforms(features_batch, x)
+        return upsampled_features
 
     @torch.no_grad()
     def forward_sequential(
