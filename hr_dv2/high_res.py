@@ -318,7 +318,7 @@ class HighResDV2(nn.Module):
         self,
         x: torch.Tensor,
         attn_choice: AttentionOptions = "none",
-        batch_size: int = 16,
+        batch_size: int = 4,
     ) -> torch.Tensor:
         """Feed input img $x through network and get low and high res features.
 

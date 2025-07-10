@@ -115,14 +115,14 @@ def get_flip_transforms() -> Tuple[PartialTrs, PartialTrs]:
     transforms = [
         iden_partial,
         horizontal_flip_partial,
-        iden_partial,
-        vertical_flip_partial,
+        # iden_partial,
+        # vertical_flip_partial,
     ]
     inv_tranforms = [
         iden_partial,
         horizontal_flip_partial,
-        iden_partial,
-        vertical_flip_partial,
+        # iden_partial,
+        # vertical_flip_partial,
     ]
     return transforms, inv_tranforms
 

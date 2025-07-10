@@ -195,8 +195,13 @@ class Patch:
             B, N, C = x.shape
             qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads)
 
-            q, k, v = unbind(qkv, 2)
-            x = memory_efficient_attention(q, k, v, attn_bias=attn_bias)
+            q, k, v = torch.unbind(qkv, 2)        
+            # x = memory_efficient_attention(q, k, v, attn_bias=attn_bias)
+            q = q.transpose(1, 2)
+            k = k.transpose(1, 2)
+            v = v.transpose(1, 2)
+            x = torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=attn_bias)
+            x = x.transpose(1, 2)
             to_append: torch.Tensor
             if attn_choice != "none":
                 to_append = get_qkvo_per_head(q, k, v, x, attn_choice, self.attn_drop)
