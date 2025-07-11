@@ -3,12 +3,12 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hr_dv2"
+name = "hires_dino"
 version = "0.0.1"
 authors = [
   { name="Anonymous", email="hello@gmail.com"},
 ]
-description = "Module for extracting high-resolution features from the DINOv2 model."
+description = "Module for extracting high-resolution features from the DINO model. Forked from https://github.com/tldr-group/HR-Dv2"
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
@@ -23,4 +23,4 @@ dynamic = ["dependencies"]
 dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools]
-packages = ["hr_dv2"]
+packages = ["hires_dino"]

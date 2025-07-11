@@ -1,3 +1,7 @@
+# Forked from: https://github.com/tldr-group/HR-Dv2
+
+---
+
 # High-Res DINOv2 (HR-Dv2)
 
 Upsampling spatialised features from vision transformer (ViT) models like DINO and DINOv2 for unsupervised and weakly-supervised materials segmentation.
